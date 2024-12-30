@@ -1,0 +1,9 @@
+### upload foto
+POST http://localhost:3000/upload
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+--WebKitFormBoundary
+Content-Disposition: form-data; name="photo"; filename="example saja 1.png"
+Content-Type: image/png
+
+< ./example saja 1.png
+--WebKitFormBoundary--
