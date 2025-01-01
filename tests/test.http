@@ -7,3 +7,20 @@ Content-Type: image/png
 
 < ./example saja 1.png
 --WebKitFormBoundary--
+### upload foto
+POST http://localhost:3000/upload/img
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+--WebKitFormBoundary
+Content-Disposition: form-data; name="photo"; filename="example saja 1.png"
+Content-Type: image/png
+
+< ./example saja 1.png
+--WebKitFormBoundary--
+### upload tanpa foto
+POST http://localhost:3000/upload/img
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+--WebKitFormBoundary
+Content-Disposition: form-data; name="photo"; filename=""
+Content-Type: image/png
+
+--WebKitFormBoundary--

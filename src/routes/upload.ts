@@ -1,8 +1,9 @@
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { existsSync, createWriteStream, unlinkSync } from "fs";
 import { mkdir } from "fs/promises";
 import path from "path";
 import { createHash } from "crypto";
+import { writeFile } from "fs/promises";
 
 const uploadDir = path.join(process.cwd(), "public/img");
 if (!existsSync(uploadDir)) {
@@ -58,6 +59,37 @@ uploadRoute.post("/", async (c) => {
         name: fullurl,
         type: processImage[0].type,
         size: processImage[0].size,
+      },
+    },
+    200
+  );
+});
+
+uploadRoute.post("/img", async (c: Context) => {
+  const body = await c.req.parseBody();
+  // cek apakah ada file yang dilampirkan
+  let fullurl = "";
+  if (body.photo instanceof File && body.photo.name) {
+    const image = body.photo;
+    const file = await image.arrayBuffer();
+    const buffer = Buffer.from(file);
+    const hash = createHash("md5").update(image.name).digest("hex");
+    const ext = path.extname(image.name);
+    const fileName = `${hash}${ext}`;
+    const filePath = path.join(uploadDir, fileName);
+    const fileStream = createWriteStream(filePath);
+    fileStream.write(buffer);
+    fileStream.end();
+    const url = new URL(c.req.url);
+    const protocol = url.protocol;
+    const host = c.req.header("host");
+    fullurl = `${protocol}//${host}/public/img/${fileName}`;
+  }
+  return c.json(
+    {
+      message: "hello Hono form image route",
+      files: {
+        name: fullurl,
       },
     },
     200
